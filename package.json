@@ -1,0 +1,28 @@
+{
+  "name": "back-end_tweteroo",
+  "version": "1.0.0",
+  "description": "back-end da aplicação tweteroo",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kess220/Twterro-Back-End.git"
+  },
+  "keywords": [
+    "Node.js",
+    "Express",
+    "Back-End"
+  ],
+  "author": "Kaio Victor Benicio da Silva",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Kess220/Twterro-Back-End/issues"
+  },
+  "homepage": "https://github.com/Kess220/Twterro-Back-End#readme",
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "express": "^4.18.2"
+  }
+}
