@@ -1,9 +1,11 @@
 const express = require("express");
 const bodyParser = require("body-parser");
+const cors = require("cors");
 
 const app = express();
-const port = 4000;
+const port = 5000;
 
+app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -12,10 +14,17 @@ const tweets = [];
 
 app.get("/", (req, res) => res.send("Hello World!"));
 
-app.listen(port, () => console.log(`Example app listening on port ${port}!`));
-
 app.post("/sign-up", (req, res) => {
   const { username, avatar } = req.body;
+
+  if (
+    !username ||
+    typeof username !== "string" ||
+    !avatar ||
+    typeof avatar !== "string"
+  ) {
+    return res.status(400).send("Todos os campos são obrigatórios!");
+  }
 
   const usuario = {
     username,
@@ -29,6 +38,15 @@ app.post("/sign-up", (req, res) => {
 
 app.post("/tweets", (req, res) => {
   const { username, tweet } = req.body;
+
+  if (
+    !username ||
+    typeof username !== "string" ||
+    !tweet ||
+    typeof tweet !== "string"
+  ) {
+    return res.status(400).send("Todos os campos são obrigatórios!");
+  }
 
   const usuario = usuarios.find((user) => user.username === username);
   if (!usuario) {
@@ -57,3 +75,5 @@ app.get("/tweets", (req, res) => {
 
   res.json(tweetsResponse);
 });
+
+app.listen(port, () => console.log(`Example app listening on port ${port}!`));
