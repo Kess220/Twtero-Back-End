@@ -1,11 +1,9 @@
 const express = require("express");
 const bodyParser = require("body-parser");
-const cors = require("cors");
 
 const app = express();
 const port = 5000;
 
-app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -14,13 +12,15 @@ const tweets = [];
 
 app.get("/", (req, res) => res.send("Hello World!"));
 
+app.listen(port, () => console.log(`Example app listening on port ${port}!`));
+
 app.post("/sign-up", (req, res) => {
   const { username, avatar } = req.body;
 
   if (
     !username ||
-    typeof username !== "string" ||
     !avatar ||
+    typeof username !== "string" ||
     typeof avatar !== "string"
   ) {
     return res.status(400).send("Todos os campos são obrigatórios!");
@@ -33,16 +33,17 @@ app.post("/sign-up", (req, res) => {
 
   usuarios.push(usuario);
 
-  res.send("OK");
+  res.status(201).send("OK");
 });
 
 app.post("/tweets", (req, res) => {
-  const { username, tweet } = req.body;
+  const username = req.headers.user;
+  const { tweet } = req.body;
 
   if (
     !username ||
-    typeof username !== "string" ||
     !tweet ||
+    typeof username !== "string" ||
     typeof tweet !== "string"
   ) {
     return res.status(400).send("Todos os campos são obrigatórios!");
@@ -59,11 +60,20 @@ app.post("/tweets", (req, res) => {
   };
   tweets.push(novoTweet);
 
-  res.send("OK");
+  res.status(201).send("OK");
 });
 
 app.get("/tweets", (req, res) => {
-  const tweetsResponse = tweets.slice(-10).map((tweet) => {
+  const page = parseInt(req.query.page) || 1;
+
+  if (page < 1 || isNaN(page)) {
+    return res.status(400).send("Informe uma página válida!");
+  }
+
+  const startIndex = (page - 1) * 10;
+  const endIndex = startIndex + 10;
+
+  const tweetsResponse = tweets.slice(startIndex, endIndex).map((tweet) => {
     const usuario = usuarios.find((user) => user.username === tweet.username);
     const { username, avatar } = usuario || {};
     return {
@@ -75,5 +85,3 @@ app.get("/tweets", (req, res) => {
 
   res.json(tweetsResponse);
 });
-
-app.listen(port, () => console.log(`Example app listening on port ${port}!`));
