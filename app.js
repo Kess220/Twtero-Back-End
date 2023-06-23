@@ -87,3 +87,29 @@ app.get("/tweets", (req, res) => {
 
   res.json(tweetsResponse);
 });
+
+app.get("/tweets/:username", (req, res) => {
+  const { username } = req.params;
+
+  if (!username || typeof username !== "string") {
+    return res.status(400).send("Nome de usuário inválido!");
+  }
+
+  const tweetsUsuario = tweets.filter((tweet) => tweet.username === username);
+
+  if (tweetsUsuario.length === 0) {
+    return res.json([]);
+  }
+
+  const tweetsResponse = tweetsUsuario.map((tweet) => {
+    const usuario = usuarios.find((user) => user.username === tweet.username);
+    const { username, avatar } = usuario || {};
+    return {
+      username,
+      avatar,
+      tweet: tweet.tweet,
+    };
+  });
+
+  res.json(tweetsResponse);
+});
